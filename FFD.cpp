@@ -19,7 +19,7 @@ int binPackingFFD(std::vector<int> nums, int binCapacity) {
             }
         }
         if (needsBin) {
-            binSpaces.push_back(binCapacity);
+            binSpaces.push_back(binCapacity-num);
         }
     }
 
