@@ -1,9 +1,9 @@
 #include <vector>
 #include <chrono>
 
-int binPackingILP(std::vector<int> nums);
+#include "FFD.hpp"
 
-int binPackingFFD(std::vector<int> nums);
+int binPackingILP(std::vector<int> nums, int binCapacity);
 
 int main() {
 
@@ -12,12 +12,14 @@ int main() {
     for (auto& problem : binPackingProblems) {
         // expectedNumBins = problem.expectedNumBins;
         auto start = std::chrono::high_resolution_clock::now();
-        numBins = binPackingILP(nums);
+        // numBins = binPackingFFD(problem.nums, problem.binCapacity);
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
         // Do something with duration
         // Do something with (numBins - expectedNumBins)
     }
+
+    // Repeat for ILP
 
 }
