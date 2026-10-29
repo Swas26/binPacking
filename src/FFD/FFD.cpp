@@ -6,7 +6,11 @@
 // Primary author: Elan
 
 int binPackingFFD(std::vector<int> nums, int binCapacity) {
-    sort(nums.begin(), nums.end());
+    if (nums.size() == 0) {
+        return 0;
+    }
+
+    sort(nums.begin(), nums.end(), std::greater<int>());
 
     std::list<int> binSpaces = {binCapacity};
 
