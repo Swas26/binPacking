@@ -1,9 +1,12 @@
 CXX = clang++
 CXXFLAGS = -std=c++17 -O2 -Wall -Isrc/FFD -Isrc/ILP -Isrc/bench
 
+# BREW_DIRECTORY = /opt/homebrew
+BREW_DIRECTORY = /usr/local
+
 # HiGHS
-HIGHS_INC = -isystem /opt/homebrew/include/highs
-HIGHS_LIB = -L/opt/homebrew/lib -lhighs -Wl,-rpath,/opt/homebrew/lib
+HIGHS_INC = -isystem $(BREW_DIRECTORY)/include/highs
+HIGHS_LIB = -L$(BREW_DIRECTORY)/lib -lhighs -Wl,-rpath,$(BREW_DIRECTORY)/lib
 
 ALGOS = src/FFD/FFD.cpp src/ILP/ILP.cpp
 HEADERS = src/FFD/FFD.hpp src/ILP/ILP.hpp src/bench/problems.hpp
