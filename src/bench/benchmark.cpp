@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
     out << std::fixed << std::setprecision(3);
     std::cout << std::fixed << std::setprecision(3);
-    out << "instance,set,n,capacity,expected_bins,known_optimal,ffd_bins,ffd_ms,ilp_bins,ilp_ms,ilp_hit_time_limit" << std::endl;
+    out << "instance,set,n,capacity,expected_bins,known_optimal,ffd_bins,ffd_ms,mffd_bins,mffd_ms,ilp_bins,ilp_ms,ilp_hit_time_limit" << std::endl;
 
     for (size_t i = 0; i < total; ++i) {
         const Problem& problem = binPackingProblems[i];
@@ -71,6 +71,10 @@ int main(int argc, char* argv[]) {
         auto start = std::chrono::steady_clock::now();
         const int ffdBins = binPackingFFD(problem.nums, problem.binCapacity);
         const double ffdMs = msSince(start);
+
+        start = std::chrono::steady_clock::now();
+        const int mffdBins = binPackingMFFD(problem.nums, problem.binCapacity);
+        const double mffdMs = msSince(start);
 
         start = std::chrono::steady_clock::now();
         const int ilpBins = binPackingILP(problem.nums, problem.binCapacity, ffdBins, timeLimit);
@@ -81,12 +85,15 @@ int main(int argc, char* argv[]) {
         // endl flushes, so finished rows survive a crash or Ctrl-C
         out << problem.name << ',' << problem.set << ',' << problem.nums.size() << ',' << problem.binCapacity << ','
             << problem.expectedNumBins << ',' << (problem.knownOptimal ? "true" : "false") << ','
-            << ffdBins << ',' << ffdMs << ',' << ilpBins << ',' << ilpMs << ','
+            << ffdBins << ',' << ffdMs << ','
+            << mffdBins << ',' << mffdMs << ','
+            << ilpBins << ',' << ilpMs << ','
             << (hitTimeLimit ? "true" : "false") << std::endl;
 
         std::cout << "[" << (i + 1) << "/" << total << "] " << problem.name
                   << "  n=" << problem.nums.size() << "  expected=" << problem.expectedNumBins
                   << "  ffd=" << ffdBins << " (" << ffdMs << " ms)"
+                  << "  mffd=" << mffdBins << " (" << mffdMs << " ms)"
                   << "  ilp=" << ilpBins << " (" << ilpMs << " ms" << (hitTimeLimit ? ", time limit" : "") << ")"
                   << std::endl;
     }
