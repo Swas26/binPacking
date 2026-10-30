@@ -1,0 +1,11 @@
+instance,set,n,capacity,expected_bins,known_optimal,ffd_bins,ffd_ms,mffd_bins,mffd_ms,ilp_bins,ilp_ms,ilp_hit_time_limit
+Scholl_3/HARD0.txt,Scholl_3,200,100000,56,true,59,0.015,59,0.033,58,10008.968,true
+Scholl_3/HARD1.txt,Scholl_3,200,100000,57,true,60,0.015,60,0.030,60,10044.782,true
+Scholl_3/HARD2.txt,Scholl_3,200,100000,56,true,60,0.015,60,0.030,59,10005.264,true
+Scholl_3/HARD3.txt,Scholl_3,200,100000,55,true,59,0.016,59,0.029,59,10016.318,true
+Scholl_3/HARD4.txt,Scholl_3,200,100000,57,true,60,0.015,60,0.030,60,10011.806,true
+Scholl_3/HARD5.txt,Scholl_3,200,100000,56,true,59,0.016,59,0.029,59,10023.235,true
+Scholl_3/HARD6.txt,Scholl_3,200,100000,57,true,60,0.015,60,0.030,59,10012.988,true
+Scholl_3/HARD7.txt,Scholl_3,200,100000,55,true,59,0.015,59,0.030,59,10049.144,true
+Scholl_3/HARD8.txt,Scholl_3,200,100000,57,true,60,0.018,60,0.064,60,10024.508,true
+Scholl_3/HARD9.txt,Scholl_3,200,100000,56,true,60,0.015,60,0.066,58,10024.507,true

@@ -21,8 +21,15 @@ binpack: $(BENCH_SRCS) $(HEADERS)
 test: $(TEST_SRCS) $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(HIGHS_INC) $(TEST_SRCS) -o test $(HIGHS_LIB)
 
+# make run: every set in Data/bpplib, one ./binpack process per set, JOBS at a time,
+# each writing results/<set>.csv. Change TIME_LIMIT here, or for one run: make run TIME_LIMIT=60
+# also: make run SETS="Falkenauer_T Hard28"   (only those sets)
+TIME_LIMIT ?= 10
+JOBS ?= $(shell sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || echo 4)
+SETS ?= $(notdir $(patsubst %/,%,$(wildcard Data/bpplib/*/)))
+
 run: binpack
-	./binpack 10 Falkenauer_U
+	printf '%s\n' $(SETS) | xargs -P $(JOBS) -I{} ./binpack $(TIME_LIMIT) {}
 
 clean:
 	rm -f binpack test

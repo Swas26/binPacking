@@ -14,7 +14,7 @@
 
 // Usage: ./binpack <timeLimitSeconds> <set> [set ...]
 // Runs FFD and then the ILP (with FFD's bin count as maxBins) on every instance
-// of the given BPPLIB sets, writing one row per instance to results/results.csv.
+// of the given BPPLIB sets, writing one row per instance to results/<set>.csv.
 
 static void printUsage(const char* prog) {
     std::cerr << "usage: " << prog << " <timeLimitSeconds> <set> [set ...]\n"
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     }
     const std::vector<std::string> sets(argv + 2, argv + argc);
 
-    // Load everything before opening results.csv so a bad set name doesn't wipe old results
+    // Load everything before opening any results CSV so a bad set name doesn't wipe old results
     std::vector<Problem> binPackingProblems;
     try {
         binPackingProblems = loadProblemSets("Data", sets);
@@ -49,24 +49,34 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    const std::string resultsPath = "results/results.csv";
     std::error_code ec;
     std::filesystem::create_directories("results", ec);
-    std::ofstream out(resultsPath);
-    if (!out) {
-        std::cerr << "error: cannot write " << resultsPath << "\n";
-        return 1;
-    }
 
     const size_t total = binPackingProblems.size();
     std::cout << "Running " << total << " instances, ILP time limit " << timeLimit << " s" << std::endl;
-
-    out << std::fixed << std::setprecision(3);
     std::cout << std::fixed << std::setprecision(3);
-    out << "instance,set,n,capacity,expected_bins,known_optimal,ffd_bins,ffd_ms,mffd_bins,mffd_ms,ilp_bins,ilp_ms,ilp_hit_time_limit" << std::endl;
+
+    std::ofstream out;
+    std::string resultsPath;
+    size_t rows = 0;
 
     for (size_t i = 0; i < total; ++i) {
         const Problem& problem = binPackingProblems[i];
+
+        // Problems come grouped by set, so each new set starts its own results/<set>.csv
+        if (i == 0 || problem.set != binPackingProblems[i - 1].set) {
+            if (out.is_open()) std::cout << "wrote " << rows << " rows to " << resultsPath << std::endl;
+            out.close();
+            resultsPath = "results/" + problem.set + ".csv";
+            out.open(resultsPath);
+            if (!out) {
+                std::cerr << "error: cannot write " << resultsPath << "\n";
+                return 1;
+            }
+            out << std::fixed << std::setprecision(3);
+            out << "instance,set,n,capacity,expected_bins,known_optimal,ffd_bins,ffd_ms,mffd_bins,mffd_ms,ilp_bins,ilp_ms,ilp_hit_time_limit" << std::endl;
+            rows = 0;
+        }
 
         auto start = std::chrono::steady_clock::now();
         const int ffdBins = binPackingFFD(problem.nums, problem.binCapacity);
@@ -89,6 +99,7 @@ int main(int argc, char* argv[]) {
             << mffdBins << ',' << mffdMs << ','
             << ilpBins << ',' << ilpMs << ','
             << (hitTimeLimit ? "true" : "false") << std::endl;
+        ++rows;
 
         std::cout << "[" << (i + 1) << "/" << total << "] " << problem.name
                   << "  n=" << problem.nums.size() << "  expected=" << problem.expectedNumBins
@@ -98,6 +109,6 @@ int main(int argc, char* argv[]) {
                   << std::endl;
     }
 
-    std::cout << "wrote " << total << " rows to " << resultsPath << std::endl;
+    if (out.is_open()) std::cout << "wrote " << rows << " rows to " << resultsPath << std::endl;
     return 0;
 }
