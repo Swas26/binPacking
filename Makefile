@@ -2,7 +2,7 @@ CXX = clang++
 CXXFLAGS = -std=c++17 -O2 -Wall -Isrc/FFD -Isrc/ILP -Isrc/bench
 
 # BREW_DIRECTORY = /opt/homebrew
-BREW_DIRECTORY = /usr/local
+BREW_DIRECTORY ?= $(shell brew --prefix 2>/dev/null || echo /usr/local)
 
 # HiGHS
 HIGHS_INC = -isystem $(BREW_DIRECTORY)/include/highs
