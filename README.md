@@ -1,5 +1,7 @@
 # Bin Packing Algorithm Comparison
 
+## Requirements
+
 To build the program, the ILP algorithm requires the Homebrew HiGHS software.
 
 If you have Homebrew installed but not HiGHS, you can install HiGHS by running the command below:
@@ -9,6 +11,8 @@ brew install highs
 ```
 
 You must specify your `BREW_DIRECTORY` in the Makefile, depending on your computer architecture or brew installation.
+
+To run the Python analysis script, you must have the matplotlib module installed.
 
 ## Running the benchmark
 

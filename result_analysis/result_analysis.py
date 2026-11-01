@@ -15,26 +15,24 @@ for resultFile in resultFiles:
     result = pd.read_csv(os.path.join("results",resultFile))
     resultSets.append(result)
 
-# Every graph has 3 lines for each alg + optimal
+# Output Bins Plots
+for resultSet in resultSets:
+    plt.plot(resultSet['ffd_bins'], linewidth = 3)
+    plt.plot(resultSet['mffd_bins'])
+    plt.plot(resultSet['ilp_bins'], linestyle='dashdot')
+    plt.plot(resultSet['expected_bins'], linestyle='--')
 
-# Output Plots
-# for resultSet in resultSets:
-#     plt.plot(resultSet['ffd_bins'], linewidth = 3)
-#     plt.plot(resultSet['mffd_bins'])
-#     plt.plot(resultSet['ilp_bins'], linestyle='dashdot')
-#     plt.plot(resultSet['expected_bins'], linestyle='--')
+    plt.xlabel('Problem Instance')
+    plt.ylabel('Number of Bins')
+    plt.title(f"Algorithm Output Comparison - {resultSet['set'][0]} Dataset")
 
-#     plt.xlabel('Problem Instance')
-#     plt.ylabel('Number of Bins')
-#     plt.title(f"Algorithm Output Comparison - {resultSet['set'][0]} Dataset")
+    plt.ylim((0,1.05*max(resultSet['ffd_bins'].max(), resultSet['mffd_bins'].max(), resultSet['ilp_bins'].max())))
 
-#     plt.ylim((0,1.05*max(resultSet['ffd_bins'].max(), resultSet['mffd_bins'].max(), resultSet['ilp_bins'].max())))
+    plt.legend(["FFD", "MFFD", "ILP", "Optimal"])
+    plt.savefig(f"result_analysis/graphs/bin_comparison_{resultSet['set'][0]}.png", dpi=300)
+    plt.close()
 
-#     plt.legend(["FFD", "MFFD", "ILP", "Optimal"])
-#     plt.savefig(f"result_analysis/graphs/bin_comparison_{resultSet['set'][0]}.png", dpi=300)
-#     plt.close()
-
-# Error Plots [for each set, per instance, sorted by n / average across each set] {Additive / Multiplicative}
+# Additive Error Plots
 algs = ["FFD","MFFD","ILP"]
 datasetNames = [resultSet['set'][0] for resultSet in resultSets]
 
@@ -63,6 +61,7 @@ plt.savefig(f"result_analysis/graphs/additive_error.png", dpi=300)
 plt.close()
 
 
+# Multiplicative Approx Plots
 for resultSet in resultSets:
     plt.plot(resultSet['ffd_bins']/resultSet['expected_bins'], linewidth = 3)
     plt.plot(resultSet['mffd_bins']/resultSet['expected_bins'], linestyle='dashed')
@@ -83,6 +82,46 @@ for resultSet in resultSets:
 
     plt.close()
 
-# Add limit line for multi
-
 # Time Plots [for each set, per instance, sorted by n / average across each set]
+runtimes = [
+    [(resultSet['ffd_ms']).mean() for resultSet in resultSets],
+    [(resultSet['mffd_ms']).mean() for resultSet in resultSets],
+    [(resultSet['ilp_ms']).mean() for resultSet in resultSets],
+]
+
+plt.title(f"Average Runtime Comparison")
+
+plt.xlabel('Problem Set')
+plt.ylabel('Average Algorithm Runtime (ms)')
+plt.yscale('log')
+
+x = np.arange(len(datasetNames))
+width = 0.2
+offset = 0
+for runtime in runtimes:
+    plt.bar(x + offset, runtime, width)
+    offset += width
+plt.xticks(x, datasetNames, rotation=90)
+plt.legend(algs)
+plt.tight_layout()
+
+plt.savefig(f"result_analysis/graphs/runtime_summary.png", dpi=300)
+plt.close()
+
+
+for resultSet in resultSets:
+    plt.plot(resultSet['ffd_ms'], linewidth = 3)
+    plt.plot(resultSet['mffd_ms'], linestyle='dashed')
+    plt.plot(resultSet['ilp_ms'], linestyle='dashdot')
+
+    plt.xlabel('Problem Set')
+    plt.ylabel('Average Algorithm Runtime (ms)')
+    plt.title(f"Runtime Comparison - {resultSet['set'][0]} Dataset")
+
+    plt.yscale('log')
+
+    plt.legend(["FFD", "MFFD", "ILP"])
+    plt.tight_layout()
+    plt.savefig(f"result_analysis/graphs/runtime_comparison_{resultSet['set'][0]}.png", dpi=300)
+
+    plt.close()
