@@ -74,10 +74,10 @@ for resultSet in resultSets:
 
     plt.ylim((0.98,1.3))
 
-    plt.axhline(11/9, linestyle='dotted')
-    plt.axhline(71/60, linestyle='dotted', color='orange')
+    plt.plot(11/9 + 6/9/resultSet['expected_bins'], linestyle='dotted', color='blue')
+    plt.plot(71/60 + 1/resultSet['expected_bins'], linestyle='dotted', color='orange')
 
-    plt.legend(["FFD", "MFFD", "ILP"])
+    plt.legend(["FFD", "MFFD", "ILP", "FFD Approx Boundary", "MFFD Approx Boundary"])
     plt.tight_layout()
     plt.savefig(f"result_analysis/graphs/approximation_comparison_{resultSet['set'][0]}.png", dpi=300)
 
