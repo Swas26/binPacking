@@ -1,7 +1,8 @@
+# Bin Packing Algorithm Comparison
 
-The ILP algorithm requires the Homebrew HiGHS software.
+To build the program, the ILP algorithm requires the Homebrew HiGHS software.
 
-To install HiGHS, run the command below:
+If you have Homebrew installed but not HiGHS, you can install HiGHS by running the command below:
 
 ```bash
 brew install highs
