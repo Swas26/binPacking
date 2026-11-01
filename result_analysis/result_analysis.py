@@ -35,7 +35,6 @@ for resultFile in resultFiles:
 #     plt.close()
 
 # Error Plots [for each set, per instance, sorted by n / average across each set] {Additive / Multiplicative}
-
 algs = ["FFD","MFFD","ILP"]
 datasetNames = [resultSet['set'][0] for resultSet in resultSets]
 
@@ -63,8 +62,26 @@ plt.tight_layout()
 plt.savefig(f"result_analysis/graphs/additive_error.png", dpi=300)
 plt.close()
 
-# plt.plot(*11/9)
-# plt.plot(*71/60)
+
+for resultSet in resultSets:
+    plt.plot(resultSet['ffd_bins']/resultSet['expected_bins'], linewidth = 3)
+    plt.plot(resultSet['mffd_bins']/resultSet['expected_bins'], linestyle='dashed')
+    plt.plot(resultSet.loc[resultSet['ilp_bins']!=-1,'ilp_bins']/resultSet['expected_bins'], linestyle='dashdot')
+
+    plt.xlabel('Problem Instance')
+    plt.ylabel('Approximation Factor')
+    plt.title(f"Multiplicative Error Comparison - {resultSet['set'][0]} Dataset")
+
+    plt.ylim((0.98,1.3))
+
+    plt.axhline(11/9, linestyle='dotted')
+    plt.axhline(71/60, linestyle='dotted', color='orange')
+
+    plt.legend(["FFD", "MFFD", "ILP"])
+    plt.tight_layout()
+    plt.savefig(f"result_analysis/graphs/approximation_comparison_{resultSet['set'][0]}.png", dpi=300)
+
+    plt.close()
 
 # Add limit line for multi
 
