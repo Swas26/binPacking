@@ -143,7 +143,7 @@ def writeGraphs():
         plt.plot(resultSet['mffd_ms'], linestyle='dashed')
         plt.plot(resultSet['ilp_ms'], linestyle='dashdot')
 
-        plt.xlabel('Problem Set')
+        plt.xlabel('Problem Instance')
         plt.ylabel('Average Algorithm Runtime (ms)')
         plt.title(f"Runtime Comparison - {resultSet['set'][0]} Dataset")
 
