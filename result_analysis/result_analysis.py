@@ -74,11 +74,42 @@ def writeGraphs():
         plt.plot(11/9 + 6/9/resultSet['expected_bins'], linestyle='dotted', color='blue')
         plt.plot(71/60 + 1/resultSet['expected_bins'], linestyle='dotted', color='orange')
 
-        plt.legend(["FFD", "MFFD", "ILP", "FFD Approx Boundary", "MFFD Approx Boundary"])
+        plt.legend(algs + ["FFD Approx Boundary", "MFFD Approx Boundary"])
         plt.tight_layout()
         plt.savefig(f"result_analysis/graphs/approximation_comparison_{resultSet['set'][0]}.png", dpi=300)
 
         plt.close()
+
+    mult_error = [
+        [(resultSet['ffd_bins']/resultSet['expected_bins']-6/9/resultSet['expected_bins']).mean() for resultSet in resultSets],
+        [(resultSet['mffd_bins']/resultSet['expected_bins']-1/resultSet['expected_bins']).mean() for resultSet in resultSets],
+        [(resultSet.loc[resultSet['ilp_bins']!=-1,'ilp_bins']/resultSet.loc[resultSet['ilp_bins']!=-1,'expected_bins']).mean() for resultSet in resultSets],
+    ]
+
+    plt.title(f"Average Multiplicative Error Comparison")
+
+    plt.xlabel('Problem Set')
+    plt.ylabel('Average Approximation Factor')
+
+    x = np.arange(len(datasetNames))
+    width = 0.2
+    offset = 0
+    for alg_error in mult_error:
+        plt.bar(x + offset, alg_error, width)
+        offset += width
+    plt.xticks(x, datasetNames, rotation=90)
+    plt.ylim((0.98, 1.25))
+
+    plt.axhline(11/9, linestyle='dotted', color='blue')
+    plt.axhline(71/60, linestyle='dotted', color='orange')
+
+    plt.legend(["FFD Approx Boundary", "MFFD Approx Boundary"] + algs)
+    plt.tight_layout()
+
+    plt.savefig(f"result_analysis/graphs/approximation_error.png", dpi=300)
+    plt.close()
+
+    
 
     # Time Plots [for each set, per instance, sorted by n / average across each set]
     runtimes = [
@@ -118,7 +149,7 @@ def writeGraphs():
 
         plt.yscale('log')
 
-        plt.legend(["FFD", "MFFD", "ILP"])
+        plt.legend(algs)
         plt.tight_layout()
         plt.savefig(f"result_analysis/graphs/runtime_comparison_{resultSet['set'][0]}.png", dpi=300)
 
