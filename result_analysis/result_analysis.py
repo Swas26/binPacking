@@ -155,7 +155,7 @@ def writeGraphs():
 
         plt.close()
 
-def printOptimal():
+def printStats():
     totalExactFFD = 0
     totalExactMFFD = 0
     totalExactILP = 0
@@ -165,7 +165,8 @@ def printOptimal():
         numExactMFFD = len(resultSets[i][resultSets[i]['mffd_bins']-resultSets[i]['expected_bins'] == 0])
         numExactILP = len(resultSets[i][resultSets[i]['ilp_bins']-resultSets[i]['expected_bins'] == 0])
         numInstances = len(resultSets[i])
-        print(f"Dataset {datasetNames[i]} optimal: FFD = {numExactFFD}/{numInstances}, MFFD = {numExactMFFD}/{numInstances}, ILP = {numExactILP}/{numInstances}")
+        print(f"{datasetNames[i]} optimal: FFD = {numExactFFD}/{numInstances}, MFFD = {numExactMFFD}/{numInstances}, ILP = {numExactILP}/{numInstances}")
+        print(f"{datasetNames[i]} deviation: FFD = {(resultSets[i]['ffd_bins']-resultSets[i]['expected_bins']).max()}, MFFD = {(resultSets[i]['mffd_bins']-resultSets[i]['expected_bins']).max()}, ILP = {(resultSets[i]['ilp_bins']-resultSets[i]['expected_bins']).max()}")
         totalExactFFD += numExactFFD
         totalExactMFFD += numExactMFFD
         totalExactILP += numExactILP
@@ -173,5 +174,5 @@ def printOptimal():
     print()
     print(f"Overall optimal: FFD = {totalExactFFD}/{totalNumInstances}, MFFD = {totalExactMFFD}/{totalNumInstances}, ILP = {totalExactILP}/{totalNumInstances}")
 
-printOptimal()
+printStats()
 writeGraphs()
